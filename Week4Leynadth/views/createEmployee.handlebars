@@ -1,5 +1,5 @@
 <h1>Add New Employee</h1>
-<form action="/add-employee" method="POST">
+<form action="/employees" method="POST">
     <label>First Name:</label>
     <input type="text" name="firstName" required><br>
 
@@ -7,12 +7,12 @@
     <input type="text" name="lastName" required><br>
 
     <label>Department:</label>
-    <select name="department">
-        <option>Harware</option>
-        <option>Appliances</option>
-        <option>Cashier</option>
-    </select>
-    
+    <select name="department" required>
+        <option value="Hardware">Hardware</option>
+        <option value="Appliances">Appliances</option>
+        <option value="Cashier">Cashier</option>
+    </select><br>
+
     <label>Start Date:</label>
     <input type="date" name="startDate" required><br>
 
@@ -22,7 +22,7 @@
     <label>Salary:</label>
     <input type="number" name="salary" required><br>
 
-    <button type="submit">Add</button>
+    <button type="submit">Add Employee</button>
 </form>
 
-<a href="/">Gp back to Employee List</a>
+<a href="/">Back to Employee List</a>

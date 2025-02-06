@@ -1,4 +1,4 @@
-<P>Employee List</P>
+<h1>Employee List</h1>
 <table>
     <tr>
         <th>First Name</th>
@@ -7,6 +7,7 @@
         <th>Start Date</th>
         <th>Job Title</th>
         <th>Salary</th>
+        <th>Actions</th>
     </tr>
     {{#each employees}}
     <tr>
@@ -17,12 +18,12 @@
         <td>{{this.jobTitle}}</td>
         <td>${{this.salary}}</td>
         <td>
-            <a href="/edit-employee/{{this._id}}">Edit</a>
-            <form action="/delte-employee/{{this._id}}" method="POST">
+            <a href="/employees/edit/{{this._id}}">Edit</a>
+            <form action="/employees/delete/{{this._id}}" method="POST" style="display:inline;">
                 <button type="submit">Delete</button>
             </form>
         </td>
     </tr>
     {{/each}}
 </table>
-<a href="/addEmployee">Add a Employee</a>
+<a href="/register">Add a New Employee</a>
