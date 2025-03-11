@@ -1,84 +1,83 @@
 const express = require("express");
+const mongoose = require("mongoose");
+const Employee = require("../models/Employee");
+const { ensureAuthenticated } = require("../middleware/auth");
+
 const router = express.Router();
-const Employee = require("../models/Employee"); // Updated to Employee model
-const { isAuthenticated } = require("./auth"); // Import authentication middleware
+
+// Middleware to check authentication
+function ensureAuthenticated(req, res, next) {
+  if (req.isAuthenticated()) {
+    return next();
+  }
+  res.status(401).json({ message: "Unauthorized access" });
+}
 
 // Get all employees
-router.get("/userdashboard", isAuthenticated, async (req, res) => {
-    try {
-        const employees = await Employee.find().lean(); // Get employees
-        res.render("userdashboard", {
-            layout: "main",
-            user: req.user, // Ensure user data is passed
-            employees // Pass employees list
-        });
-    } catch (err) {
-        console.error("Error fetching employees:", err);
-        res.status(500).send("Error loading dashboard");
-    }
+router.get("/employees", ensureAuthenticated, async (req, res) => {
+  try {
+    const employees = await Employee.find();
+    res.json(employees);
+  } catch (err) {
+    console.error("Error fetching employees:", err);
+    res.status(500).json({ message: "Server error" });
+  }
 });
 
+// Create a new employee
+router.post("/employees", ensureAuthenticated, async (req, res) => {
+  try {
+    const { name, position, salary } = req.body;
 
-// Get a single employee by ID
-router.get("/employees/:id", async (req, res) => {
-    try {
-        const employee = await Employee.findById(req.params.id);
-        if (!employee) {
-            return res.status(404).json({ error: "Employee not found" });
-        }
-        res.json(employee);
-    } catch (err) {
-        res.status(500).json({ error: "Failed to fetch employee" });
+    if (!name || !position || !salary) {
+      return res.status(400).json({ message: "All fields are required" });
     }
-});
 
-// Add a new employee
-router.post("/addemployee", async (req, res) => {
-    try {
-        const newEmployee = new Employee(req.body);
-        const savedEmployee = await newEmployee.save();
-        res.status(201).json(savedEmployee);
-    } catch (err) {
-        res.status(400).json({ error: "Failed to add employee" });
-    }
+    const newEmployee = new Employee({ name, position, salary });
+    await newEmployee.save();
+
+    res.status(201).json({ message: "Employee added successfully" });
+  } catch (err) {
+    console.error("Error adding employee:", err);
+    res.status(500).json({ message: "Server error" });
+  }
 });
 
 // Update an employee
-router.put("/updateemployee/:id", async (req, res) => {
-    try {
-        const updatedEmployee = await Employee.findByIdAndUpdate(req.params.id, req.body, {
-            new: true,
-            runValidators: true
-        });
-        if (!updatedEmployee) {
-            return res.status(404).json({ error: "Employee not found" });
-        }
-        res.json(updatedEmployee);
-    } catch (err) {
-        res.status(400).json({ error: "Failed to update the employee" });
+router.put("/employees/:id", ensureAuthenticated, async (req, res) => {
+  try {
+    const { name, position, salary } = req.body;
+    const updatedEmployee = await Employee.findByIdAndUpdate(
+      req.params.id,
+      { name, position, salary },
+      { new: true }
+    );
+
+    if (!updatedEmployee) {
+      return res.status(404).json({ message: "Employee not found" });
     }
+
+    res.json({ message: "Employee updated successfully", updatedEmployee });
+  } catch (err) {
+    console.error("Error updating employee:", err);
+    res.status(500).json({ message: "Server error" });
+  }
 });
 
 // Delete an employee
-router.delete("/deleteemployee/:id", async (req, res) => {
-    try {
-        const deletedEmployee = await Employee.findByIdAndDelete(req.params.id);
-        if (!deletedEmployee) {
-            return res.status(404).json({ error: "Employee not found" });
-        }
-        res.json({ message: "Employee deleted successfully" });
-    } catch (err) {
-        console.error(err);
-        res.status(500).json({ error: "Failed to delete employee" });
-    }
-});
+router.delete("/employees/:id", ensureAuthenticated, async (req, res) => {
+  try {
+    const deletedEmployee = await Employee.findByIdAndDelete(req.params.id);
 
-// Route for adding an employee (Render view)
-router.get("/addemployee", isAuthenticated, (req, res) => {
-    res.render("addemployee", {
-        title: "Add an Employee",
-        message: "Please add an employee."
-    });
+    if (!deletedEmployee) {
+      return res.status(404).json({ message: "Employee not found" });
+    }
+
+    res.json({ message: "Employee deleted successfully" });
+  } catch (err) {
+    console.error("Error deleting employee:", err);
+    res.status(500).json({ message: "Server error" });
+  }
 });
 
 module.exports = router;
