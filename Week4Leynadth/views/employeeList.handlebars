@@ -18,8 +18,8 @@
         <td>{{this.jobTitle}}</td>
         <td>${{this.salary}}</td>
         <td>
-            <a href="/employees/edit/{{this._id}}">Edit</a>
-            <form action="/employees/delete/{{this._id}}" method="POST" style="display:inline;">
+            <a href="/editEmployee/{{this._id}}">Edit</a>
+            <form action="/deleteEmployee/{{this._id}}" method="POST" style="display:inline;">
                 <button type="submit">Delete</button>
             </form>
         </td>

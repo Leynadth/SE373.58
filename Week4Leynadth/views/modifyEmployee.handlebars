@@ -1,5 +1,5 @@
 <h1>Update Employee</h1>
-<form action="/employees/update/{{employee._id}}" method="POST">
+<form action="/updateEmployee/{{employee._id}}" method="POST">
     <label>First Name:</label>
     <input type="text" name="firstName" value="{{employee.firstName}}" required><br>
 
@@ -8,9 +8,9 @@
 
     <label>Department:</label>
     <select name="department" required>
-        <option value="Hardware" {{#if (eq employee.department "Hardware")}}selected{{/if}}>Hardware</option>
-        <option value="Appliances" {{#if (eq employee.department "Appliances")}}selected{{/if}}>Appliances</option>
-        <option value="Cashier" {{#if (eq employee.department "Cashier")}}selected{{/if}}>Cashier</option>
+        <option value="Engineering" {{#if (eq employee.department "Engineering")}}selected{{/if}}>Engineering</option>
+        <option value="HR" {{#if (eq employee.department "HR")}}selected{{/if}}>HR</option>
+        <option value="IT" {{#if (eq employee.department "IT")}}selected{{/if}}>IT</option>
     </select><br>
 
     <label>Start Date:</label>
