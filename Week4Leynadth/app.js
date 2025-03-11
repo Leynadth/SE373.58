@@ -56,8 +56,8 @@ app.use("/", require("./routes/auth").router);
 app.use("/", require("./routes/crud"));
 
 // MongoDB Database connection
-// const mongoURI = "mongodb://localhost:27017/employeedb"
-const mongoURI = process.env.MONGO_URI; //|| "mongodb://localhost:27017/employeedb"
+const mongoURI = "mongodb://localhost:27017/employeedb"
+//const mongoURI = process.env.MONGO_URI; //|| "mongodb://localhost:27017/employeedb"
 mongoose.connect(mongoURI);
 const db = mongoose.connection;
 
@@ -82,16 +82,21 @@ function tellTheMessage() {
 }
 
 // Handlebars examples
-app.get("/hbsindex", (req, res) => {
-    res.render("home", {
-        title: "Welcome to the Handlebars Site",
+//app.get("/hbsindex", (req, res) => {
+ //   res.render("home", {
+  //      title: "Welcome to the Handlebars Site",
         message: "This is our page using the template engine"
-    });
-});
+    //});
+//});
 
+
+app.use((req, res, next) => {
+    res.locals.user = req.user || null; // Makes user available in Handlebars
+    next();
+});
 // Home route
 app.get("/", (req, res) => {
-    res.sendFile(path.join(__dirname, "public", "index.html"));
+    res.redirect("/auth/login");
 });
 
 // JSON data route (updated for employees)

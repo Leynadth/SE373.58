@@ -4,14 +4,20 @@ const Employee = require("../models/Employee"); // Updated to Employee model
 const { isAuthenticated } = require("./auth"); // Import authentication middleware
 
 // Get all employees
-router.get("/employees", async (req, res) => {
+router.get("/userdashboard", isAuthenticated, async (req, res) => {
     try {
-        const employees = await Employee.find();
-        res.json(employees);
+        const employees = await Employee.find().lean(); // Get employees
+        res.render("userdashboard", {
+            layout: "main",
+            user: req.user, // Ensure user data is passed
+            employees // Pass employees list
+        });
     } catch (err) {
-        res.status(500).json({ error: "Failed to fetch employee data" });
+        console.error("Error fetching employees:", err);
+        res.status(500).send("Error loading dashboard");
     }
 });
+
 
 // Get a single employee by ID
 router.get("/employees/:id", async (req, res) => {
