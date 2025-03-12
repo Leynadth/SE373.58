@@ -1,19 +1,33 @@
 const mongoose = require("mongoose");
 
 const EmployeeSchema = new mongoose.Schema({
-  name: {
+  firstName: {
     type: String,
-    required: [true, "Employee name is required"],
+    required: [true, "First name is required"],
     trim: true,
   },
-  position: {
+  lastName: {
     type: String,
-    required: [true, "Employee position is required"],
+    required: [true, "Last name is required"],
+    trim: true,
+  },
+  department: {
+    type: String,
+    required: [true, "Department is required"],
+    enum: ["Engineering", "HR", "IT"], // Drop-down selection
+  },
+  startDate: {
+    type: Date,
+    required: [true, "Start date is required"],
+  },
+  jobTitle: {
+    type: String,
+    required: [true, "Job title is required"],
     trim: true,
   },
   salary: {
     type: Number,
-    required: [true, "Employee salary is required"],
+    required: [true, "Salary is required"],
     min: [0, "Salary must be a positive number"],
   },
   createdAt: {
