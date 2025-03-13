@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Read To-Do</title>
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            fetch('/todo')
+                .then(response => response.json())
+                .then(data => {
+                    let list = document.getElementById("todo-list");
+                    data.forEach(item => { let li = document.createElement("li");
+                        li.innerHTML = `<strong>${item.title}</strong> - ${item.completed ? " Completed" : "Not Complete"}`;
+                        list.appendChild(li);
+                    });
+                }).catch(error => console.error("Error fetching the data:", error));
+        });
+    </script>
+</head>
+<body>
+    <h1>To-Do List</h1>
+    <ul id="todo-list"></ul>
+    <a href="/index">Back to Home</a>
+</body>
+</html>
